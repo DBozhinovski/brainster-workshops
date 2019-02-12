@@ -115,4 +115,11 @@ p.activeP {
   box-shadow: 0 1px 3px rgba(0,0,0,0.2), 0 1px 2px rgba(0,0,0,0.4);
 }
 
+.tracker {
+  position: fixed;
+  bottom: .5em;
+  right: .5em;
+  font-size: 5em;
+}
+
 /* !Book Menu styles */

@@ -78,5 +78,28 @@ function activateOnLoad(event) {
 window.addEventListener('load', activateOnLoad);
 
 // --- #5 BONUS ROUND: Also scroll to the active paragraph element on the page on reload --- 
-
 // This also requires a hint: tell them about the scrollIntoView() method (see line #68).
+// Another way is to check .top and scroll the window to the given .top param (although more complicated).
+
+
+// --- #6 Add a div element (via JavaScript) which tracks which paragraphs is currently active ---
+// The css for it is already written, just make sure to change it's contents when the page hash changes (and on page load)
+let tracker = document.createElement('div'); // create the necessary element
+tracker.classList.add('tracker'); // add the class
+document.body.appendChild(tracker); // append it to the body
+
+// From here on, there are two ways to solve this: either add code to the existing hashchange / load listeners for window, or create new ones
+// For the solution, I'll create new ones (although it's more efficient to have them in a single listener instead).
+
+function updatePageTracker(event) {
+  // get the has, if there is one
+  let activeId = window.location.hash;
+
+  tracker.innerText = activeId;
+}
+
+// We can reuse the same function here, and it might be a good idea to demonstrate this to them
+// The point is to convey that code can be reusable, especially for events and functions
+window.addEventListener('hashchange', updatePageTracker);
+window.addEventListener('load', updatePageTracker);
+

@@ -122,4 +122,26 @@ p.activeP {
   font-size: 5em;
 }
 
+.pager {
+  width: 560px;
+  margin: 20px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pager button {
+  cursor: pointer;
+  width: 40%;
+  margin: 0 5%;
+  font-size: 2em;
+}
+
+.scrollCheck {
+  position: fixed;
+  top: .5em;
+  right: 3em;
+  transform: scale(1.2);
+}
+
 /* !Book Menu styles */

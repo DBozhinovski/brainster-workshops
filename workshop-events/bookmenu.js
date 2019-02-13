@@ -71,8 +71,6 @@ function activateOnLoad(event) {
     let link = document.querySelector(`a[href='${activeId}`); // It's OK to show them this line and the selector before they start
     link.classList.add('active');
   }
-
-
 }
 
 window.addEventListener('load', activateOnLoad);
@@ -95,11 +93,166 @@ function updatePageTracker(event) {
   // get the has, if there is one
   let activeId = window.location.hash;
 
-  tracker.innerText = activeId;
+  if (activeId) {
+    tracker.innerText = activeId;
+  }
+  // otherwise - show nothing. Showing null / undefined should be considered incorrect.
 }
 
 // We can reuse the same function here, and it might be a good idea to demonstrate this to them
 // The point is to convey that code can be reusable, especially for events and functions
 window.addEventListener('hashchange', updatePageTracker);
 window.addEventListener('load', updatePageTracker);
+
+// From here onward, it gets more difficult. The important points are up to 6, anything after this is extra
+// practice - it's harder and requires more thinking / planning on their part.
+// Help them more if they get stuck.
+
+// --- #7 Hiding and showing paragraphs instead of scrolling through them ---
+// If they get to here, let them "turn" pages instead of having them scroll through paragraphs
+// Each paragraph represents a page
+
+function showActiveParagraph(event) {
+  // First, we hide all of the existing paragraphs
+  paragraphs.forEach(function(p) {
+    p.style.display = 'none';
+  });
+
+  // Then, we pick the one that's active (by hash) and show only that one
+  // If none are active, we show nothing.
+  let activeId = window.location.hash;
+
+  if (activeId) {
+    document.querySelector(activeId).style.display = 'block';
+  }
+}
+
+// Again, it's ok to reuse existing event bindings. It's also OK for them to use new ones:
+window.addEventListener('hashchange', showActiveParagraph);
+window.addEventListener('load', showActiveParagraph);
+
+// --- #8 Below the articles, append two button to the body that can change the previous / next paragraph. Show alerts for first / last "page",
+// if someone tries to click past those
+
+// step one: Add a container div for the buttons:
+let pager = document.createElement('div');
+// step two: Add the pager class to the element
+pager.classList.add('pager');
+// step three: Define two buttons: previous and next
+let next = document.createElement('button');
+let previous = document.createElement('button');
+// step four: Set the text of the buttons
+next.innerText = "next >";
+previous.innerText = "< previous";
+// step five: Add the buttons to the div;
+pager.appendChild(previous);
+pager.appendChild(next);
+// step six: Append pager to main
+document.querySelector('main').appendChild(pager);
+
+// step seven: Define event handlers for previous and next
+
+// This time, getting to the next and previous elements is a bit more complex
+function nextPage(event) {
+  // Again, we pick the one that's active (by hash)
+  let activeId = window.location.hash;
+  // First off, we pick the currently active element (if there is one):
+  if (activeId) {
+    let currentElement = document.querySelector(activeId);
+    // Then, using the nextElementSibling selector, we pick the neighboring element of the same type:
+    let nextElement = currentElement.nextElementSibling; // It's OK to show them this one - they don't know it yet.
+    // First, we need to check whether the next element is a paragraph or not
+    if (nextElement.tagName === 'P') {
+      // And in order to reuse existing functionality, we can just change the hash on the page
+      // by using the id of the next element
+      window.location.hash = `#${nextElement.id}`;
+      // again, we need to manually activate the link in the sidebar - for consistency
+      links.forEach(function(a) { 
+        a.classList.remove('active');
+      });
+      let link = document.querySelector(`a[href='#${nextElement.id}`);
+      link.classList.add('active');
+    } else {
+      alert('This is the last paragraph.');
+    }
+  }
+
+}
+
+// same as nextPage, but in reverse
+function previousPage(event) {
+  // Again, we pick the one that's active (by hash)
+  let activeId = window.location.hash;
+  // First off, we pick the currently active element (if there is one):
+  if (activeId) {
+    let currentElement = document.querySelector(activeId);
+    // Then, using the previousElementSibling selector, we pick the previous neighboring element of the same type:
+    let previousElement = currentElement.previousElementSibling; // It's OK to show them this one - they don't know it yet.
+    // First, we need to check whether the next element is a paragraph or not
+    if (previousElement.tagName === 'P') {
+      // And in order to reuse existing functionality, we can just change the hash on the page
+      // by using the id of the next element
+      window.location.hash = `#${previousElement.id}`;
+      // again, we need to manually activate the link in the sidebar - for consistency
+      links.forEach(function(a) { 
+        a.classList.remove('active');
+      });
+      let link = document.querySelector(`a[href='#${previousElement.id}`);
+      link.classList.add('active');
+    } else {
+      alert('This is the first paragraph.');
+    }
+  }
+}
+
+next.addEventListener('click', nextPage);
+previous.addEventListener('click', previousPage);
+
+// --- #8 And if by some miracle they even get here, add a checkbox for scrolling mode when checked (all articles visible) and a paging mode when unchecked (clicking previous / next):
+let scrollCheck = document.createElement('input');
+let scrollLabel = document.createElement('label');
+let scrollCheckContainer = document.createElement('div');
+
+scrollCheckContainer.classList.add('scrollCheck');
+
+scrollLabel.innerText = "Enable scrolling mode"
+scrollCheck.type = 'checkbox';
+
+scrollCheckContainer.appendChild(scrollLabel);
+scrollCheckContainer.appendChild(scrollCheck);
+
+document.body.appendChild(scrollCheckContainer);
+
+function handleScrollMode(event) {
+  let element = event.currentTarget;
+
+  if (element.checked) {
+    // Show all paragraphs and hide the pager
+    paragraphs.forEach(function(p) {
+      p.style.display = 'block';
+    });
+
+    pager.style.display = 'none';
+  } else {
+    // Hide all paragraphs and show the pager
+    paragraphs.forEach(function(p) {
+      p.style.display = 'none';
+    });
+
+    pager.style.display = 'block';
+
+    let activeId = window.location.hash;
+
+    if (activeId) {
+      document.querySelector(activeId).style.display = 'block';
+      document.querySelector(activeId).scrollIntoView(); // and scroll it into view for consistency
+    }
+  }
+}
+
+scrollCheck.addEventListener('change', handleScrollMode);
+
+// If they happen to solve all and want more:
+// Add a 'favorite' button to each paragraph - once clicked, the page should load there (using localStorage)
+// If they happen to also do that, let them make the page responsive :)
 

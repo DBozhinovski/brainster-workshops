@@ -112,18 +112,25 @@ window.addEventListener('load', updatePageTracker);
 // If they get to here, let them "turn" pages instead of having them scroll through paragraphs
 // Each paragraph represents a page
 
+// This code is for #9, ignore it for now
+let scrollingMode = false;
+
 function showActiveParagraph(event) {
-  // First, we hide all of the existing paragraphs
-  paragraphs.forEach(function(p) {
-    p.style.display = 'none';
-  });
+  // The if condition is added for #9 - ignore otherwise.
+  if (!scrollingMode) {
+    // First, we hide all of the existing paragraphs
+    paragraphs.forEach(function(p) {
+      p.style.display = 'none';
+    });
+  
+    // Then, we pick the one that's active (by hash) and show only that one
+    // If none are active, we show nothing.
+    let activeId = window.location.hash;
+  
+    if (activeId) {
+      document.querySelector(activeId).style.display = 'block';
+    }
 
-  // Then, we pick the one that's active (by hash) and show only that one
-  // If none are active, we show nothing.
-  let activeId = window.location.hash;
-
-  if (activeId) {
-    document.querySelector(activeId).style.display = 'block';
   }
 }
 
@@ -209,6 +216,7 @@ next.addEventListener('click', nextPage);
 previous.addEventListener('click', previousPage);
 
 // --- #9 And if by some miracle they even get here, add a checkbox for scrolling mode when checked (all articles visible) and a paging mode when unchecked (clicking previous / next):
+// Note: we also need to address the paragraph hiding - so we need to change how showActivePargraph operates (see above).
 let scrollCheck = document.createElement('input');
 let scrollLabel = document.createElement('label');
 let scrollCheckContainer = document.createElement('div');
@@ -227,6 +235,8 @@ function handleScrollMode(event) {
   let element = event.currentTarget;
 
   if (element.checked) {
+    // first, enable scrolling mode (for the event handler above)
+    scrollingMode = true;
     // Show all paragraphs and hide the pager
     paragraphs.forEach(function(p) {
       p.style.display = 'block';
@@ -234,6 +244,8 @@ function handleScrollMode(event) {
 
     pager.style.display = 'none';
   } else {
+    // first, enable scrolling mode (for the event handler above)
+    scrollingMode = false;
     // Hide all paragraphs and show the pager
     paragraphs.forEach(function(p) {
       p.style.display = 'none';

@@ -131,7 +131,7 @@ function showActiveParagraph(event) {
 window.addEventListener('hashchange', showActiveParagraph);
 window.addEventListener('load', showActiveParagraph);
 
-// --- #8 Below the articles, append two button to the body that can change the previous / next paragraph. Show alerts for first / last "page",
+// --- #8 Below the articles, append two buttons to the body that can change the previous / next paragraph. Show alerts for first / last "page",
 // if someone tries to click past those
 
 // step one: Add a container div for the buttons:
@@ -208,7 +208,7 @@ function previousPage(event) {
 next.addEventListener('click', nextPage);
 previous.addEventListener('click', previousPage);
 
-// --- #8 And if by some miracle they even get here, add a checkbox for scrolling mode when checked (all articles visible) and a paging mode when unchecked (clicking previous / next):
+// --- #9 And if by some miracle they even get here, add a checkbox for scrolling mode when checked (all articles visible) and a paging mode when unchecked (clicking previous / next):
 let scrollCheck = document.createElement('input');
 let scrollLabel = document.createElement('label');
 let scrollCheckContainer = document.createElement('div');
